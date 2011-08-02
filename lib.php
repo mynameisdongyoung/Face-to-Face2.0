@@ -326,7 +326,7 @@ function facetoface_delete_instance($id) {
 	 } catch(Exception $e) {
      $transaction->rollback($e);
 	 }
-  
+  return $result;
 }
 
 /**
