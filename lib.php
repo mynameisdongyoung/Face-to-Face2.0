@@ -3078,9 +3078,9 @@ function facetoface_add_session_to_user_calendar($session, $eventname, $userid, 
  */
 function facetoface_add_session_to_site_calendar($session, $facetoface)
 {
-    global $CFG, $DB;
+ global $CFG, $DB;
 
-    if (empty($facetoface->showoncalendar) or empty($session->datetimeknown)) {
+   if (empty($facetoface->showoncalendar) or empty($session->datetimeknown)) {
         return true; // not meant for the calendar
     }
 
@@ -3089,23 +3089,18 @@ function facetoface_add_session_to_site_calendar($session, $facetoface)
         $shortname = substr($facetoface->name, 0, CALENDAR_MAX_NAME_LENGTH);
     }
 
-    $description = '';
-    if (!empty($facetoface->description)) {
-        $description .= '<p>'.clean_text($facetoface->description, FORMAT_HTML).'</p>';
-    }
-    $description .= facetoface_print_session($session, false, true, true);
     $signupurl = "$CFG->wwwroot/mod/facetoface/signup.php?s=$session->id";
-    $description .= '<a href="' . $signupurl . '">' . get_string('signupforthissession', 'facetoface') . '</a>';
+
 
     $result = true;
     foreach ($session->sessiondates as $date) {
         $newevent = new object();
-        $newevent->name = addslashes($shortname);
-        $newevent->description = addslashes($description);
+        $newevent->name = $shortname;
+        $newevent->description =facetoface_print_session($session, false, true, true).'<a href="'.$signupurl.'">Sign-up for this Face-to-face session</a>.';
         $newevent->format = FORMAT_HTML;
-        $newevent->courseid = SITEID; // site-wide event
+        $newevent->courseid = SITEID;
         $newevent->groupid = 0;
-        $newevent->userid = 0; // not a user event
+        $newevent->userid = 0;
         $newevent->uuid = "$session->id";
         $newevent->instance = $session->facetoface;
         $newevent->modulename = 'facetoface';
@@ -3114,7 +3109,7 @@ function facetoface_add_session_to_site_calendar($session, $facetoface)
         $newevent->timeduration = $date->timefinish - $date->timestart;
         $newevent->visible = 1;
         $newevent->timemodified = time();
-
+        
         $result = $result && $DB->insert_record('event', $newevent);
     }
 
