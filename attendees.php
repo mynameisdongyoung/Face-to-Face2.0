@@ -167,7 +167,8 @@ if ($attendees = facetoface_get_attendees($session->id)) {
 
             $optionid = 'submissionid_'.$attendee->submissionid;
             $status = $attendee->statuscode;
-            $select = choose_from_menu($status_options, $optionid, $status, 'choose', '', '0', true);
+            //$select = choose_from_menu($status_options, $optionid, $status, 'choose', '', '0', true);
+            $select = html_writer::select($status_options, $optionid, $status);
             $data[] = $select;
         }
         else {
