@@ -45,14 +45,18 @@ if (!empty($download)) {
     exit();
 }
 
-require_course_login($course);
-require_capability('mod/facetoface:view', $context);
+    require_login($course->id, true, $cm);
+    $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+    require_capability('mod/facetoface:view', $context);
 
-add_to_log($course->id, 'facetoface', 'view', "view.php?id=$cm->id", $facetoface->id, $cm->id);
+	 add_to_log($course->id, 'facetoface', 'view', "view.php?id=$cm->id", $facetoface->id, $cm->id);
+    $completion=new completion_info($course);
+    $completion->set_module_viewed($cm);
+    
+	 $PAGE->set_url('/mod/facetoface/view.php', array('id' => $cm->id));
+    $PAGE->set_context($context);
+    $PAGE->set_cm($cm);
 
-
-$PAGE->set_cm($cm);
-$PAGE->set_url('/mod/facetoface/view.php', array('id' => $cm->id));
 
 $title = $course->shortname . ': ' . format_string($facetoface->name);
 
