@@ -21,10 +21,7 @@ class mod_facetoface_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
 
-        $mform->addElement('htmleditor', 'description', get_string('description'), array('rows'  => 10, 'cols'  => 64));
-        $mform->setType('description', PARAM_RAW);
-        $mform->addHelpButton('description', 'description', 'facetoface');
-        $mform->disabledIf('description', 'showoncalendar');
+        $this->add_intro_editor(true);
 
         $mform->addElement('text', 'thirdparty', get_string('thirdpartyemailaddress', 'facetoface'), array('size'=>'64'));
         $mform->setType('name', PARAM_NOTAGS);
