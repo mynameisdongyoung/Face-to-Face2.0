@@ -100,8 +100,7 @@ function facetoface_get_status($statuscode) {
  * @param $htmloutput  Whether the output is in HTML or not
  */
 function format_cost($amount, $htmloutput=true) {
-    //setlocale(LC_MONETARY, get_string('locale'));
-		setlocale(LC_MONETARY, 0);    
+    setlocale(LC_MONETARY, get_string('locale', 'langconfig'));
     $localeinfo = localeconv();
 
     $symbol = $localeinfo['currency_symbol'];
@@ -348,8 +347,7 @@ function cleanup_session_data($session) {
     }
 
     // Get the decimal point separator
-//    setlocale(LC_MONETARY, get_string('locale'));
-    setlocale(LC_MONETARY, 0);
+    setlocale(LC_MONETARY, get_string('locale', 'langconfig'));
     $localeinfo = localeconv();
     $symbol = $localeinfo['decimal_point'];
     if (empty($symbol)) {
