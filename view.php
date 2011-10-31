@@ -75,9 +75,9 @@ if (empty($cm->visible) and !has_capability('mod/facetoface:viewemptyactivities'
 echo $OUTPUT->box_start();
 echo $OUTPUT->heading(get_string('allsessionsin', 'facetoface')." $facetoface->name", 2);
 
-if ($facetoface->description) {
+if ($facetoface->intro) {
     echo $OUTPUT->box_start('generalbox','description');
-    echo format_text($facetoface->description, FORMAT_HTML);
+    echo format_text($facetoface->intro, $facetoface->introformat);
     echo $OUTPUT->box_end();
 }
 

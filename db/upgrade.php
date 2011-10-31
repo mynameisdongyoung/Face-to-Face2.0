@@ -21,6 +21,7 @@ function xmldb_facetoface_upgrade($oldversion=0) {
 
     global $CFG, $USER, $db,$DB;
 
+    $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
 
     $result = true;
 
@@ -507,6 +508,45 @@ function xmldb_facetoface_upgrade($oldversion=0) {
         $field = new XMLDBField('mailed');
         $result = $result && drop_field($table, $field, false, true);
     }
+
+    if ($oldversion < 2011082401) {
+        // We're making changes to the facetoface table
+        $table = new xmldb_table('facetoface');
+
+        // Add the intro field
+        $field = new xmldb_field('intro', XMLDB_TYPE_TEXT, 'big', null, null, null, null, 'name');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Add the introformat field
+        $field = new xmldb_field('introformat', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'intro');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Move all data from description to intro
+        $facetofaces = $DB->get_records('facetoface');
+        foreach ($facetofaces as $facetoface) {
+            $facetoface->intro = $facetoface->description;
+            $facetoface->introformat = FORMAT_HTML;
+            $DB->update_record('facetoface', $facetoface);
+        }
+
+        // Remove the old description field
+        $field = new xmldb_field('description');
+
+        // Conditionally launch drop field intro
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // facetoface savepoint reached
+        upgrade_mod_savepoint(true, 2011082401, 'facetoface');
+    }
+
 
     return $result;
 }
